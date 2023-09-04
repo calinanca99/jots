@@ -9,6 +9,19 @@
 // A valid JWT token must be sent with each request, except
 // POST /jwt_token and GET /book/{name}/{author}.
 
-fn main() {
-    println!("Hello, world!");
+use axum::{response::IntoResponse, routing::get, Router};
+
+#[tokio::main]
+async fn main() -> Result<(), std::io::Error> {
+    let app = Router::new().route("/ping", get(ping));
+    axum::Server::bind(&"0.0.0.0:3000".parse().expect("Cannot parse address"))
+        .serve(app.into_make_service())
+        .await
+        .expect("Cannot start server");
+
+    Ok(())
+}
+
+async fn ping() -> impl IntoResponse {
+    "Pong!\n"
 }
